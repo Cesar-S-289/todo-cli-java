@@ -7,6 +7,8 @@ public class TodoCli {
 
     public static void main(String[] args) {
         
+        // instanciate and inject dependencies
+        
         int exitCode = new CommandLine(new CattoCli()).execute( "add", "text for test", "--quick");
         System.exit(exitCode);
     }
