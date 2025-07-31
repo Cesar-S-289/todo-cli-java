@@ -1,5 +1,6 @@
 package com.cattotech.todo.cli.command.subcommand;
 
+import com.cattotech.todo.cli.service.ITaskService;
 import java.util.Scanner;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
@@ -9,6 +10,12 @@ import picocli.CommandLine.Parameters;
         mixinStandardHelpOptions = true,
         description = "subcommand to add a task")
 public class AddTask implements Runnable {
+    
+    private final ITaskService taskServ;
+
+    public AddTask(ITaskService taskServ) {
+        this.taskServ = taskServ;
+    }
 
     @Parameters(index = "0", description = "task name")
     private String taskName;

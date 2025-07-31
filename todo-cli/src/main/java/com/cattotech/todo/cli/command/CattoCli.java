@@ -11,13 +11,8 @@ import picocli.CommandLine.Command;
 @Command(name = "task",
         mixinStandardHelpOptions = true,
         description = "ToDo CLI application",
-        requiredOptionMarker = '*',
-        subcommands =  {
-            AddTask.class,
-            SeeTask.class,
-            DeleteTask.class,
-            UpdateTask.class
-        })
+        requiredOptionMarker = '*'
+)
 public class CattoCli implements Runnable {
     
 
