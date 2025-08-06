@@ -8,7 +8,7 @@ import picocli.CommandLine.Parameters;
 
 @Command(name = "add",
         mixinStandardHelpOptions = true,
-        description = "subcommand to add a task")
+        description = "subcommand to add a task.")
 public class AddTask implements Runnable {
     
     private final ITaskService taskServ;
@@ -27,8 +27,11 @@ public class AddTask implements Runnable {
     public void run() {
 
         if (quickTask) {
-            System.out.println("Task added succesfully");
-            System.out.println(taskName);
+            taskServ.addTask(taskName, null, null, null, null);
+            
+            // adding message of succesfull operation
+            System.out.println("task added succesfully");
+            
             return;
         }
 
@@ -56,8 +59,10 @@ public class AddTask implements Runnable {
                 date = scanner.next();
             } while (!date.matches(regex));
         }
-        // only for check data input and validations
-        System.out.println(String.format("|%s    |%s    |%s    |%s    |%s    |", taskName, description, date, status, priority));
+        
+        taskServ.addTask(taskName, description, status, priority, date);
+        
+        // check if we need message later
     }
 
 }

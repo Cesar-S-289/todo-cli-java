@@ -2,6 +2,10 @@ package com.cattotech.todo.cli.service;
 
 import com.cattotech.todo.cli.model.Task;
 import com.cattotech.todo.cli.repository.ITaskRepository;
+import com.cattotech.todo.cli.utils.Priority;
+import com.cattotech.todo.cli.utils.Status;
+import com.cattotech.todo.cli.utils.Utils;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class TaskService implements ITaskService {
@@ -14,12 +18,33 @@ public class TaskService implements ITaskService {
 
     @Override
     public void addTask(String name, String description, String status, String priority, String date) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        
+        // if somenthing here is null, was quick task command
+        if (description == null || status == null) {
+            Task taskToSave = new Task(name);
+            taskRepo.insertTask(taskToSave);
+            return;
+        }
+        
+        Priority pr = Priority.valueOf(priority.toUpperCase());
+        Status st = Status.valueOf(status.toUpperCase());
+        LocalDate dt = Utils.getDate(date);
+        
+        Task taskToSave = new Task(name, description, pr, st, dt);
+        taskRepo.insertTask(taskToSave);
     }
 
     @Override
     public ArrayList<Task> showAll() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        // manage null, like empty list
+        ArrayList<Task> response = taskRepo.getAllTasks();
+        
+        if (response == null){
+            System.out.println("No tasks founds, try adding one.");
+            return null;
+        }
+        
+        return response;
     }
 
     @Override

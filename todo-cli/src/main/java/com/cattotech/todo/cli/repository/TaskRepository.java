@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.List;
 
 public class TaskRepository implements ITaskRepository {
 
@@ -23,13 +24,13 @@ public class TaskRepository implements ITaskRepository {
     @Override
     public void initializeDataBase() {
         String createDatabase = """
-                    CREATE TABLE IF NOT EXITS tasks (
+                    CREATE TABLE IF NOT EXISTS tasks (
                         id INTEGER PRIMARY KEY AUTOINCREMENT,
                         name TEXT NOT NULL UNIQUE,
-                        descritption TEXT,
+                        description TEXT,
                         priority TEXT,
                         status TEXT,
-                        limit TEXT
+                        limit_date TEXT
                     );
                                 """;
 
@@ -39,6 +40,9 @@ public class TaskRepository implements ITaskRepository {
 
         } catch (SQLException ex) {
             System.out.println("Somenthing go wrong starting DB, try later");
+            System.err.println(ex.getMessage());
+            
+            ex.printStackTrace();
             // nothing for now
         }
     }
@@ -85,7 +89,40 @@ public class TaskRepository implements ITaskRepository {
 
     @Override
     public ArrayList<Task> getAllTasks() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        String sql = "SELECT * FROM tasks";
+        ArrayList results = new ArrayList<Task>();
+        
+        try (Connection cnn = DriverManager.getConnection(URL);
+            Statement stmt = cnn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql)) {
+            
+            if (rs.next()) {
+                do {
+                    //create task and load it
+                    String name = rs.getString("name");
+                    Long id = rs.getLong("id");
+                    String description= rs.getString("description");
+                    Status st = Status.valueOf(rs.getString("status"));
+                    Priority pr = Priority.valueOf(rs.getString("priority"));
+                    LocalDate date = Utils.getDate(rs.getString("limit_date"));
+
+                    // create instance of task and set id
+                    Task taskToList = new Task(name, description, pr, st, date);
+                    taskToList.setId(id);
+                    
+                    results.add(taskToList);
+                    
+                } while(rs.next());
+            } else {
+                return null;
+            }
+            
+        } catch (SQLException ex) {
+            System.out.println("entro al catch");
+        }
+        
+        
+        return results;
     }
 
     @Override
@@ -100,9 +137,9 @@ public class TaskRepository implements ITaskRepository {
 
     // the text must be saved as TEXT
     @Override
-    public void isertTask(Task task) {
+    public void insertTask(Task task) {
         // the null date must be inserted in DB like none
-        String sql = "INSERT INTO tasks(name, description, priority, status, limit) VALUES(?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO tasks(name, description, priority, status, limit_date) VALUES(?, ?, ?, ?, ?)";
         
         try (Connection cnn = DriverManager.getConnection(URL);
             PreparedStatement stmt = cnn.prepareStatement(sql)) {
@@ -114,7 +151,7 @@ public class TaskRepository implements ITaskRepository {
             stmt.setString(4, task.getStatus().name());
             
             String dateToSave = (task.getDateLimit() != null) ? task.getDateLimit().toString() : "none";
-            stmt.setString(5, dateToSave);
+            stmt.setString(4, dateToSave);
             
             // execute query, no expected return
             boolean check = stmt.execute();
@@ -124,7 +161,9 @@ public class TaskRepository implements ITaskRepository {
             }
             
         } catch (SQLException ex) {
-            // TODO            
+            // TODO
+            System.err.println(ex.getMessage());
+            ex.printStackTrace();            
         }
     }
 

@@ -25,7 +25,7 @@ public interface ITaskRepository {
     public void deleteAll();
     
     // insert task
-    public void isertTask(Task task);
+    public void insertTask(Task task);
     
     // update task 
     public void updateTask(Long id);

@@ -2,7 +2,6 @@ package com.cattotech.todo.cli.model;
 
 import com.cattotech.todo.cli.utils.Priority;
 import com.cattotech.todo.cli.utils.Status;
-import com.cattotech.todo.cli.utils.Utils;
 import java.time.LocalDate;
 
 
@@ -13,17 +12,14 @@ public class Task {
     private String description;
     private Priority priority;
     private Status status;
-    private LocalDate dateLimit;
+    private LocalDate dateLimit = null;
 
-    public Task(String name, String description, Priority priority, Status status, String date) {
-        
-        LocalDate newDate = Utils.getDate(date);
-        
+    public Task(String name, String description, Priority priority, Status status, LocalDate date) {
         this.name = name;
         this.description = description;
         this.priority = priority;
         this.status = status;
-        this.dateLimit = newDate;
+        this.dateLimit = date;
     }
 
     public Task(String name) {
