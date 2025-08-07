@@ -41,9 +41,8 @@ public class TaskRepository implements ITaskRepository {
         } catch (SQLException ex) {
             System.out.println("Somenthing go wrong starting DB, try later");
             System.err.println(ex.getMessage());
-            
-            ex.printStackTrace();
             // nothing for now
+            
         }
     }
 
@@ -67,7 +66,7 @@ public class TaskRepository implements ITaskRepository {
                     result.setPriority(Priority.valueOf(rs.getString("priority")));
                     
                     // convert to LocalDate and asing to Task
-                    LocalDate limitDate = Utils.getDate(rs.getString("limit"));
+                    LocalDate limitDate = Utils.getDate(rs.getString("limit_date"));
                     result.setDateLimit(limitDate);
                     
                 } else {
@@ -77,10 +76,12 @@ public class TaskRepository implements ITaskRepository {
                 }
             } catch (SQLException ex) {
                 // don't forget the catch
+                System.err.println(ex.getMessage());
             }
 
         } catch (SQLException ex) {
             // don't forget the catch
+            System.err.println(ex.getMessage());
         }
         
         
@@ -118,7 +119,7 @@ public class TaskRepository implements ITaskRepository {
             }
             
         } catch (SQLException ex) {
-            System.out.println("entro al catch");
+            System.err.println(ex.getMessage());
         }
         
         
@@ -150,20 +151,16 @@ public class TaskRepository implements ITaskRepository {
             stmt.setString(3, task.getPriority().name());
             stmt.setString(4, task.getStatus().name());
             
-            String dateToSave = (task.getDateLimit() != null) ? task.getDateLimit().toString() : "none";
-            stmt.setString(4, dateToSave);
+            
+            String dateToSave = (task.getDateLimit() != null) ? Utils.formatDate(task.getDateLimit()) : "none";
+            stmt.setString(5, dateToSave);
             
             // execute query, no expected return
-            boolean check = stmt.execute();
-            
-            if (!check) {
-                System.out.println("Something go wrong saving the task");
-            }
+            stmt.execute();
             
         } catch (SQLException ex) {
             // TODO
             System.err.println(ex.getMessage());
-            ex.printStackTrace();            
         }
     }
 

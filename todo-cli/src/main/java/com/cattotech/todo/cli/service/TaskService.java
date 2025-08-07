@@ -16,6 +16,8 @@ public class TaskService implements ITaskService {
         this.taskRepo = taskRepo;
     }
 
+    // somenthing is wrong with status, check later
+    
     @Override
     public void addTask(String name, String description, String status, String priority, String date) {
         
@@ -27,13 +29,27 @@ public class TaskService implements ITaskService {
         }
         
         Priority pr = Priority.valueOf(priority.toUpperCase());
-        Status st = Status.valueOf(status.toUpperCase());
+        
+        Status st;
+        if (status.equalsIgnoreCase("on going")){
+            st = Status.ON_GOING;
+        } else {
+            st = Status.NOT_STARTED;
+        }
+        
         LocalDate dt = Utils.getDate(date);
         
         Task taskToSave = new Task(name, description, pr, st, dt);
         taskRepo.insertTask(taskToSave);
     }
 
+    @Override
+    public boolean existTask(String name) {
+        Task checkTask =  taskRepo.getTaskByName(name);
+        
+        return checkTask != null;
+    }
+    
     @Override
     public ArrayList<Task> showAll() {
         // manage null, like empty list
@@ -96,5 +112,5 @@ public class TaskService implements ITaskService {
     public void deleteAll() {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
-    
+
 }

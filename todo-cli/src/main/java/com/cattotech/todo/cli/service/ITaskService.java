@@ -13,6 +13,9 @@ public interface ITaskService {
     // show all task    
     public ArrayList<Task> showAll();
     
+    // check if exist
+    public boolean existTask(String name);
+    
     // show only X priority task 
     public ArrayList<Task> showOnlyHigh(String priority);
     // show only X status task

@@ -25,11 +25,19 @@ public class AddTask implements Runnable {
 
     @Override
     public void run() {
+        
+        // check if task name is used
+        boolean exist = taskServ.existTask(taskName);
+            if (exist) {
+                System.out.println("That task already exists. use other name");
+                return;
+            }
+            
+        // TODO:
+        // print exit message only if is needed 
 
         if (quickTask) {
             taskServ.addTask(taskName, null, null, null, null);
-            
-            // adding message of succesfull operation
             System.out.println("task added succesfully");
             
             return;
