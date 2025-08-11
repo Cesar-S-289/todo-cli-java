@@ -25,7 +25,7 @@ public class TodoCli {
         
         
         
-        int exitCode = cmd.execute( "add", "first"); // change to args later
+        int exitCode = cmd.execute( "see", "-f", "not started"); // change to args later
         System.exit(exitCode);
     }
 }

@@ -28,17 +28,99 @@ public class SeeTask implements Runnable{
         
         if (priority != null) {
             // manage call of function to show priority task
+            if ( !(priority.equalsIgnoreCase("low") || priority.equalsIgnoreCase("high") || priority.equalsIgnoreCase("medium"))) {
+                System.out.println("invalid priority, insert again");
+            }
             
+            ArrayList <Task> response = taskServ.showForPriority(priority);
+            // checking if doesn't exist tasks with that priority
+            if (response == null) {
+                System.out.println("No " + priority + " priority tasks were found.");
+                return;
+            }
+            
+            // only for test, implement printing later
+            for (Task rs : response) {
+                System.out.println("name: " + rs.getName() + " priority: " + rs.getPriority().toString());
+            }
+            
+            // this return is because the command aren't mean to work together
             return;
         }
         
         if (status != null) {
             
+            if (! (status.equalsIgnoreCase("on going") || status.equalsIgnoreCase("not started") || status.equalsIgnoreCase("done"))) {
+                System.out.println("invalid status, insert again");
+                return;
+            }
+            ArrayList<Task> response = taskServ.showForStatus(status);
+            // checking if doesn't exist tasks with that status
+            if (response == null) {
+                System.out.println("No " + status + " status task were found.");
+                return;
+            }
+            
+            // only for test
+            for (Task rs : response) {
+                System.out.println("name: " + rs.getName() + " status: " + rs.getStatus().toString());
+            }
+            
+            // this return is because the command aren't mean to work together
             return;
         }
         
         if (filterBy != null) {
             
+            if (filterBy.equalsIgnoreCase("done")) {
+                ArrayList<Task> response = taskServ.fromDoneToNotStarted();
+                
+                if (response != null) {
+
+                    for (Task rs : response) {
+                        System.out.println("name: " + rs.getName() + " status: " + rs.getStatus().toString());
+                    }
+                    
+                    return;
+                }
+            }
+            
+            if (filterBy.equalsIgnoreCase("not started")) {
+                ArrayList<Task> response = taskServ.fromNotStartedToDone();
+                
+                if (response != null) {
+                    for (Task rs : response) {
+                        System.out.println("name: " + rs.getName() + " status: " + rs.getStatus().toString());
+                    }
+                    
+                    return;
+                }
+            }
+            
+            if (filterBy.equalsIgnoreCase("low")) {
+                ArrayList<Task> response = taskServ.fromLowToHigh();
+                
+                if (response != null) {
+                    for (Task rs : response) {
+                        System.out.println("name: " + rs.getName() + " priority: " + rs.getPriority().toString());
+                    }
+                    
+                    return;
+                }
+            }
+            
+            if (filterBy.equalsIgnoreCase("high")) {
+                ArrayList<Task> response = taskServ.fromHighToLow();
+                if (response != null) {
+                    for (Task rs : response) {
+                        System.out.println("name: " + rs.getName() + " priority: " + rs.getPriority().toString());
+                    }
+                    
+                    return;
+                }
+            }
+            
+            System.out.println("Seems like you don't have task loaded");
             return;
         }
         

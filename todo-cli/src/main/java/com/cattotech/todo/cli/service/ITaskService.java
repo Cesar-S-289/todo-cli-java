@@ -17,9 +17,9 @@ public interface ITaskService {
     public boolean existTask(String name);
     
     // show only X priority task 
-    public ArrayList<Task> showOnlyHigh(String priority);
+    public ArrayList<Task> showForPriority(String priority);
     // show only X status task
-    public ArrayList<Task> showOnlyDone(String priority);
+    public ArrayList<Task> showForStatus(String status);
     
     // task ordered from high to low
     public ArrayList<Task> fromHighToLow();

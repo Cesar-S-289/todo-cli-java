@@ -12,7 +12,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.List;
 
 public class TaskRepository implements ITaskRepository {
 
@@ -126,16 +125,6 @@ public class TaskRepository implements ITaskRepository {
         return results;
     }
 
-    @Override
-    public void deleteByName() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
-    @Override
-    public void deleteAll() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
-
     // the text must be saved as TEXT
     @Override
     public void insertTask(Task task) {
@@ -163,6 +152,90 @@ public class TaskRepository implements ITaskRepository {
             System.err.println(ex.getMessage());
         }
     }
+    
+    @Override
+    public ArrayList<Task> getTasksByStatus(String status) {
+        String sql = "SELECT * FROM tasks WHERE status = ?";
+        ArrayList result = new ArrayList<Task>();
+
+        try (Connection cnn = DriverManager.getConnection(URL); PreparedStatement stmt = cnn.prepareStatement(sql)) {
+
+            stmt.setString(1, status);
+            try (ResultSet rs = stmt.executeQuery()) {
+
+                if (rs.next()) {
+                    do {
+                        String name = rs.getString("name");
+                        Long id = rs.getLong("id");
+                        String description = rs.getString("description");
+                        Status st = Status.valueOf(status);
+                        Priority pr = Priority.valueOf(rs.getString("priority"));
+                        LocalDate date = Utils.getDate(rs.getString("limit_date"));
+
+                        Task taskToAdd = new Task(name, description, pr, st, date);
+                        taskToAdd.setId(id);
+
+                        result.add(taskToAdd);
+                    } while (rs.next());
+                } else {
+                    return null;
+                }
+            } catch (SQLException ex) {
+                System.err.println(ex.getMessage());
+            }
+        } catch (SQLException ex) {
+            System.err.println(ex.getMessage());
+        }
+
+        return result;
+    }
+
+    @Override
+    public ArrayList<Task> getTasksByPriority(String priority) {
+        String sql = "SELECT * FROM tasks WHERE priority = ?";
+        ArrayList result = new ArrayList<Task>();
+
+        try (Connection cnn = DriverManager.getConnection(URL); PreparedStatement stmt = cnn.prepareStatement(sql)) {
+            stmt.setString(1, priority);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+
+                if (rs.next()) {
+                    do {
+                        String name = rs.getString("name");
+                        Long id = rs.getLong("id");
+                        String description = rs.getString("description");
+                        Status st = Status.valueOf(rs.getString("status"));
+                        Priority pr = Priority.valueOf(priority);
+                        LocalDate date = Utils.getDate(rs.getString("limit_date"));
+
+                        Task taskToAdd = new Task(name, description, pr, st, date);
+                        taskToAdd.setId(id);
+
+                        result.add(taskToAdd);
+                    } while (rs.next());
+                } else {
+                    return null;
+                }
+            } catch (SQLException ex) {
+                System.err.println(ex.getMessage());
+            }
+        } catch (SQLException ex) {
+            System.err.println(ex.getMessage());
+        }
+
+        return result;
+    }
+    
+    @Override
+    public void deleteByName() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public void deleteAll() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 
     @Override
     public void updateTask(Long id) {
@@ -176,5 +249,6 @@ public class TaskRepository implements ITaskRepository {
 
     public TaskRepository() {
     }
+
     
 }

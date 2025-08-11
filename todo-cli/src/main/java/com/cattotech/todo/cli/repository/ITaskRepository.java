@@ -30,5 +30,8 @@ public interface ITaskRepository {
     // update task 
     public void updateTask(Long id);
     
-   
+    public ArrayList<Task> getTasksByStatus(String status);
+    
+    public ArrayList<Task> getTasksByPriority(String priority);
+    
 }
