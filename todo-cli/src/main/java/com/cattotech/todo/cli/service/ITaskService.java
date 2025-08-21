@@ -33,9 +33,9 @@ public interface ITaskService {
     //  -------------- FOR UPDATE -----------------------
     
     // modify all fields of the task
-    public void modifyAllTask(Long id, String name, String description, String priority, String Status, String date);
+    public void modifyAllTask(String name);
     // modify only one field
-    public void modifyOne(String name, String field, String newValue);
+    public void modifyOne(String name, String field);
     
     
     //  -------------- FOR DELETE -----------------------

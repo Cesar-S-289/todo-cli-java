@@ -1,9 +1,5 @@
 package com.cattotech.todo.cli.command;
 
-import com.cattotech.todo.cli.command.subcommand.AddTask;
-import com.cattotech.todo.cli.command.subcommand.DeleteTask;
-import com.cattotech.todo.cli.command.subcommand.SeeTask;
-import com.cattotech.todo.cli.command.subcommand.UpdateTask;
 import picocli.CommandLine.Command;
 
 
@@ -15,10 +11,8 @@ import picocli.CommandLine.Command;
 )
 public class CattoCli implements Runnable {
     
-
     @Override
     public void run() {
-        // ejecutamos la logica con los parametros y opciones que pedimos y obtenimos
     }
     
 }

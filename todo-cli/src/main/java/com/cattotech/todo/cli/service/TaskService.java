@@ -220,12 +220,14 @@ public class TaskService implements ITaskService {
     }
 
     @Override
-    public void modifyAllTask(Long id, String name, String description, String priority, String Status, String date) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public void modifyAllTask(String name) {
+        // manage all input of data
+        // if we recive one "-", that field keep his value
+        
     }
 
     @Override
-    public void modifyOne(String name, String field, String newValue) {
+    public void modifyOne(String name, String field) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 

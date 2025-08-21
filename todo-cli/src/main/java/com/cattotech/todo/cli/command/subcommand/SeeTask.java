@@ -24,7 +24,6 @@ public class SeeTask implements Runnable{
 
     @Override
     public void run() {
-        // manage with == null
         
         if (priority != null) {
             // manage call of function to show priority task
