@@ -49,7 +49,7 @@ public class AddTask implements Runnable {
 
         String description;
         try (Scanner scanner = new Scanner(System.in)) {
-            System.out.println("add a description (max X char): ");
+            System.out.println("add a description: ");
             description = scanner.nextLine();
 
             do {

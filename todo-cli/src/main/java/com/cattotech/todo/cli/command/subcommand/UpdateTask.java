@@ -14,7 +14,7 @@ public class UpdateTask implements Runnable {
     @Parameters(index = "0", description = "name of task would be updated")
     String taskName;
     
-    @Option(names = {"-f, --field"}, description = "field to update in quick option")
+    @Option(names = {"-f", "--field"}, description = "field to update in quick option")
     String field;
     
     @Option(names = {"-o", "--oneField"}, description = "enable option for update only one field")

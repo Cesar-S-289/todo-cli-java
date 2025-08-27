@@ -238,8 +238,34 @@ public class TaskRepository implements ITaskRepository {
     }
 
     @Override
-    public void updateTask(Long id) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    public void updateTask(Task task) {
+        String sql = """
+            UPDATE tasks
+            SET name = ?,
+                description = ?,
+                priority = ?,
+                status = ?,
+                limit_date = ?     
+            WHERE id = ?
+                     """;
+
+        try (Connection cnn = DriverManager.getConnection(URL); PreparedStatement stmt = cnn.prepareStatement(sql)) {
+
+            // setting values from param 
+            stmt.setString(1, task.getName());
+            stmt.setString(2, task.getDescription());
+            stmt.setString(3, task.getPriority().toString());
+            stmt.setString(4, task.getStatus().toString());
+            stmt.setString(5, Utils.formatDate(task.getDateLimit()));
+            // getting the id from where clause
+            stmt.setLong(6, task.getId());
+
+            stmt.execute();
+            
+            System.out.println("Task updated succesfully.");
+        } catch (SQLException ex) {
+            System.err.println(ex.getMessage());
+        }
     }
 
     @Override

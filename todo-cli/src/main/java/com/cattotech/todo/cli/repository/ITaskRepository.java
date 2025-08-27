@@ -28,7 +28,7 @@ public interface ITaskRepository {
     public void insertTask(Task task);
     
     // update task 
-    public void updateTask(Long id);
+    public void updateTask(Task task);
     
     public ArrayList<Task> getTasksByStatus(String status);
     

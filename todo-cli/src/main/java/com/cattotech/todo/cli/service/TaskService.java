@@ -7,10 +7,12 @@ import com.cattotech.todo.cli.utils.Status;
 import com.cattotech.todo.cli.utils.Utils;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class TaskService implements ITaskService {
 
     private final ITaskRepository taskRepo;
+    private final String regex = "^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/\\d{4}$";
 
     public TaskService(ITaskRepository taskRepo) {
         this.taskRepo = taskRepo;
@@ -223,12 +225,145 @@ public class TaskService implements ITaskService {
     public void modifyAllTask(String name) {
         // manage all input of data
         // if we recive one "-", that field keep his value
+        Task taskToUpdate = taskRepo.getTaskByName(name);
+        System.out.println("We request the value for each field, if you don't want to change one, enter '-' ");
+        
+        try (Scanner scn = new Scanner(System.in)) {
+            String newName, newDate, newStatus, newDescription, newPriority;
+            
+            // do while
+            do {
+                System.out.println("Insert new name (if name is used, we ask again for it): ");
+                // i need to add some message from repeated name
+                newName = scn.nextLine();
+            } while (this.existTask(newName));
+            
+            // check if user want to change the value
+            if (!newName.equalsIgnoreCase("-")) {
+                taskToUpdate.setName(newName);
+            }
+            
+            System.out.println("\ninsert new description: ");
+            // get description and check if we need to update it
+            newDescription = scn.nextLine();
+            if(!newDescription.equalsIgnoreCase("-")){
+                taskToUpdate.setDescription(newDescription);
+            }
+            
+            // getting and set priority
+            do {
+                System.out.println("\nselect priority (low, medium, high): ");
+                newPriority = scn.nextLine();
+            } while (!(newPriority.equalsIgnoreCase("-") || newPriority.equalsIgnoreCase("low") || newPriority.equalsIgnoreCase("medium") || newPriority.equalsIgnoreCase("high")));
+            if(newPriority.equalsIgnoreCase("-")) {
+                // update the value of priority with valueOf
+                taskToUpdate.setPriority(Priority.valueOf(newPriority.toUpperCase()));
+            }
+            
+            // getting and seting status
+            do {
+                System.out.println("\nselect stauts (not started, on going or done): ");
+                newStatus = scn.nextLine();
+            } while (!(newStatus.equalsIgnoreCase("-") || newStatus.equalsIgnoreCase("not started") || newStatus.equalsIgnoreCase("on going") || newStatus.equalsIgnoreCase("done")));
+            
+            if (!newStatus.equalsIgnoreCase("-")) {
+                switch (newStatus) {
+                    case "on going" ->
+                        taskToUpdate.setStatus(Status.ON_GOING);
+                    case "not started" ->
+                        taskToUpdate.setStatus(Status.NOT_STARTED);
+                    case "done" ->
+                       taskToUpdate.setStatus(Status.DONE);
+                }
+            }
+            
+            
+            do {
+                System.out.println("\ninsert limit date(dd/MM/yyyy):");
+                newDate = scn.next();
+            } while (!(newDate.matches(regex) || newDate.equalsIgnoreCase("-")));
+            
+            if (!newDate.equalsIgnoreCase("-")) {
+                taskToUpdate.setDateLimit(Utils.getDate(newDate));
+            }
+            
+            // pass the data and update it in repo
+            
+            taskRepo.updateTask(taskToUpdate);
+        } 
         
     }
 
     @Override
     public void modifyOne(String name, String field) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        // i need to get the new value with the scaner
+        Task taskToUpdate = taskRepo.getTaskByName(name);
+        String value;
+        
+        try (Scanner scn = new Scanner(System.in)) {
+            switch (field.toLowerCase()) {
+                case "name" -> {
+                    // repeat until valid value with do while
+                    do {
+                        System.out.println("give a new name for the task (must not be in use):");
+                        value = scn.nextLine();
+                    } while (this.existTask(value));
+
+                    taskToUpdate.setName(value);
+                }
+                case "description" -> {
+                    System.out.println("Enter a new description (couldn´t be empty):");
+                    value = scn.nextLine();
+                    // not allow void values
+                    if (value.length() == 0) {
+                        System.out.println("finished without update");
+                        return;
+                    }
+                    
+                    taskToUpdate.setDescription(value);
+                }
+
+                case "date" -> {
+                    do {
+                        System.out.println("Enter a date with the next pattern dd/MM/yyyy:");
+                        value = scn.nextLine();
+                    } while (!value.matches(regex));
+
+                    LocalDate newDate = Utils.getDate(value);
+                    taskToUpdate.setDateLimit(newDate);
+                }
+
+                case "status" -> {
+                    do {
+                        System.out.println("\nselect stauts (not started, on going or done): ");
+                        value = scn.nextLine();
+                    } while (!( value.equalsIgnoreCase("not started") || value.equalsIgnoreCase("on going") || value.equalsIgnoreCase("done")));
+                    
+                    
+                    switch (value) {
+                        case "on going" -> taskToUpdate.setStatus(Status.ON_GOING);
+                        case "not started" -> taskToUpdate.setStatus(Status.NOT_STARTED);
+                        case "done" -> taskToUpdate.setStatus(Status.DONE);
+                    }
+                }
+                
+                case "priority" -> {
+                    do {
+                        System.out.println("\nselect priority (low, medium, high): ");
+                        value = scn.nextLine();
+                    } while (!(value.equalsIgnoreCase("low") || value.equalsIgnoreCase("medium") || value.equalsIgnoreCase("high")));
+                        // update the value of priority with valueOf
+                        taskToUpdate.setPriority(Priority.valueOf(value.toUpperCase()));
+                }
+                    
+                default -> {
+                    System.out.println("Invalid field provided");
+                    return;
+                }
+            }
+        }
+
+        taskRepo.updateTask(taskToUpdate);
     }
 
     @Override

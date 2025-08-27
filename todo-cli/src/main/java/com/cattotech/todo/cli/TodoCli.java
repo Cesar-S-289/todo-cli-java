@@ -3,6 +3,7 @@ package com.cattotech.todo.cli;
 import com.cattotech.todo.cli.command.CattoCli;
 import com.cattotech.todo.cli.command.subcommand.AddTask;
 import com.cattotech.todo.cli.command.subcommand.SeeTask;
+import com.cattotech.todo.cli.command.subcommand.UpdateTask;
 import com.cattotech.todo.cli.repository.TaskRepository;
 import com.cattotech.todo.cli.service.TaskService;
 import picocli.CommandLine;
@@ -22,10 +23,11 @@ public class TodoCli {
         CommandLine cmd = new CommandLine(new CattoCli());
         cmd.addSubcommand(new AddTask(serv));
         cmd.addSubcommand(new SeeTask(serv));
+        cmd.addSubcommand(new UpdateTask(serv));
         
         
         
-        int exitCode = cmd.execute( "see", "-f", "not started"); // change to args later
+        int exitCode = cmd.execute( "update", "second", "-f", "description", "-o"); // change to args later
         System.exit(exitCode);
     }
 }
